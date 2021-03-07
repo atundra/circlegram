@@ -1,4 +1,4 @@
-import {
+import type {
   MessageText,
   MessageAnimation,
   MessageAudio,
@@ -42,7 +42,11 @@ import {
   MessageProximityAlertTriggered,
   MessageUnsupported,
   MessageSenderUser,
-  MessageSenderChat, //
+  MessageSenderChat,
+  ChatTypePrivate,
+  ChatTypeBasicGroup,
+  ChatTypeSupergroup,
+  ChatTypeSecret,
 } from "@airgram/web";
 import { makeADT, ofType } from "@morphic-ts/adt";
 
@@ -94,4 +98,11 @@ export const messageContent = makeADT("_")({
   messagePassportDataReceived: ofType<MessagePassportDataReceived>(),
   messageProximityAlertTriggered: ofType<MessageProximityAlertTriggered>(),
   messageUnsupported: ofType<MessageUnsupported>(),
+});
+
+export const chatType = makeADT("_")({
+  chatTypePrivate: ofType<ChatTypePrivate>(),
+  chatTypeBasicGroup: ofType<ChatTypeBasicGroup>(),
+  chatTypeSupergroup: ofType<ChatTypeSupergroup>(),
+  chatTypeSecret: ofType<ChatTypeSecret>(),
 });

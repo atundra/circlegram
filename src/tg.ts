@@ -31,7 +31,6 @@ import {
   UserFullInfo,
   Users,
 } from "@airgram/web";
-import { inspect } from "./utils";
 
 export const getChats = (
   p: GetChatsParams,
@@ -103,3 +102,23 @@ export const getUserFullInfo = apiMethod<GetUserFullInfoParams, UserFullInfo>((a
 );
 
 export const getUser = apiMethod<GetUserParams, User>((api, p) => api.getUser(p));
+
+export const readFile = (file: File): RTE.ReaderTaskEither<Airgram, Error | TgError, FilePart> =>
+  pipe(
+    // Download file if needed
+    file.local.canBeDownloaded && file.local.isDownloadingCompleted === false
+      ? pipe(
+          downloadFile({
+            priority: 1,
+            offset: 0,
+            synchronous: true,
+            limit: 0,
+            fileId: file.id,
+          }),
+          RTE.chain(() => RTE.of(undefined)),
+        )
+      : RTE.of(undefined),
+
+    // And read it from fs
+    RTE.chain(() => readFilePart({ fileId: file.id, count: 0, offset: 0 })),
+  );
