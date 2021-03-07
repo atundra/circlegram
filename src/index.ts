@@ -25,5 +25,3 @@ ReactDOM.render(
   r(Frame, { style: { minHeight: 400 } }, r(Page, undefined, r(App, { airgram }, undefined))),
   document.getElementById("app"),
 );
-
-window.ag = airgram;
