@@ -23,9 +23,11 @@ import {
   GetGroupsInCommonParams,
   GetSupergroupFullInfoParams,
   GetSupergroupMembersParams,
+  GetSupergroupParams,
   GetUserFullInfoParams,
   GetUserParams,
   ReadFilePartParams,
+  Supergroup,
   SupergroupFullInfo,
   User,
   UserFullInfo,
@@ -87,6 +89,10 @@ export const getGroupsInCommon = apiMethod<GetGroupsInCommonParams, Chats>((api,
 
 export const getSupergroupFullInfo = apiMethod<GetSupergroupFullInfoParams, SupergroupFullInfo>(
   (api, p) => api.getSupergroupFullInfo(p),
+);
+
+export const getSupergroup = apiMethod<GetSupergroupParams, Supergroup>((api, p) =>
+  api.getSupergroup(p),
 );
 
 export const getBasicGroupFullInfo = apiMethod<GetBasicGroupFullInfoParams, BasicGroupFullInfo>(

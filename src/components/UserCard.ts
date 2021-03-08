@@ -23,11 +23,11 @@ import { UserAction } from "./UserAction";
 export const UserCard = ({
   airgram,
   userId,
-  navigate,
+  next,
 }: {
   airgram: Airgram;
   userId: number;
-  navigate: Navigate;
+  next: Navigate;
 }) =>
   pipe(
     useRemoteData(() =>
@@ -35,7 +35,6 @@ export const UserCard = ({
         RTE.Do,
         RTE.apS("userFullInfo", getUserFullInfo({ userId })),
         RTE.apS("user", getUser({ userId })),
-        RTE.apS("commonGroups", getGroupsInCommon({ userId, offsetChatId: 0, limit: 100 })),
         RTE.bind("photoUrl", ({ user }) =>
           pipe(
             user.profilePhoto,
@@ -81,7 +80,7 @@ export const UserCard = ({
               r(Headline, { size: "small" }, `${data.user.firstName} ${data.user.lastName}`),
               r(BodyText, { subdued: true, size: "small" }, data.userFullInfo.bio),
             ),
-            r(UserAction, { userId, navigate, airgram }),
+            r(UserAction, { userId, next, airgram }),
           ),
         ),
     ),

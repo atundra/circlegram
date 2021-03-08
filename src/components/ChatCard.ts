@@ -24,11 +24,11 @@ const cropText = (s: string) => (s.length > 32 ? s.slice(0, 31) + "…" : s);
 export const ChatCard = ({
   chat,
   airgram,
-  navigate,
+  next,
 }: {
   chat: Chat;
   airgram: Airgram;
-  navigate: Navigate;
+  next: Navigate;
 }) =>
   pipe(
     O.fromNullable(chat.photo),
@@ -82,7 +82,7 @@ export const ChatCard = ({
               ),
             ),
           ),
-          r(ChatAction, { airgram, chat, navigate }, undefined),
+          r(ChatAction, { airgram, chat, next }, undefined),
         ),
       ),
   );

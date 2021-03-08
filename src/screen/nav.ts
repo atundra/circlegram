@@ -1,5 +1,10 @@
 import * as IO from "fp-ts/IO";
 import { makeADT, ofType } from "@morphic-ts/adt";
+import * as RA from "fp-ts/ReadonlyArray";
+import * as O from "fp-ts/Option";
+import * as RNEA from "fp-ts/ReadonlyNonEmptyArray";
+import { pipe } from "fp-ts/lib/function";
+import { useState } from "react";
 
 type DestinationMain = { type: "main" };
 
@@ -22,3 +27,25 @@ export const destination = makeADT("type")({
   user: ofType<DestinationUser>(),
   supergroup: ofType<DestinationSupergroup>(),
 });
+
+export const useNavigation = (): {
+  current: Destination;
+  back: O.Option<IO.IO<void>>;
+  next: Navigate;
+} =>
+  pipe(
+    useState<RNEA.ReadonlyNonEmptyArray<Destination>>(RNEA.of({ type: "main" })),
+    ([navStack, setNavStack]) => ({
+      current: RNEA.head(navStack),
+      back: pipe(
+        navStack,
+        RNEA.tail,
+        RNEA.fromReadonlyArray,
+        O.fold(
+          () => O.none,
+          (newNavStack) => O.some(() => setNavStack(newNavStack)),
+        ),
+      ),
+      next: (d) => () => setNavStack((navStack) => RNEA.cons(d, navStack)),
+    }),
+  );

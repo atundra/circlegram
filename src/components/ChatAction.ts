@@ -11,36 +11,23 @@ import { Button, Stack } from "@servicetitan/design-system";
 import { HiddenErrorButton } from "./HiddenErrorButton";
 import * as RTE from "fp-ts/ReaderTaskEither";
 import * as O from "fp-ts/Option";
+import { UserAction } from "./UserAction";
 
 const constButton = (s: string) => () => r(Button, { inactive: true }, s);
 
 export const ChatAction = ({
   chat,
   airgram,
-  navigate,
+  next,
 }: {
   chat: Chat;
   airgram: Airgram;
-  navigate: Navigate;
+  next: Navigate;
 }) =>
   pipe(
     chat.type,
     chatType.match({
-      chatTypePrivate: ({ userId }) =>
-        pipe(
-          useRemoteData(() => getGroupsInCommon({ userId, offsetChatId: 0, limit: 100 })(airgram)),
-          RD.foldNoIdle(
-            () => r(Button, { loading: true }, "0 common groups"),
-            (err): FunctionComponentElement<any> =>
-              r(HiddenErrorButton, { title: "Error", text: String(err) }),
-            (chats) =>
-              r(
-                Button,
-                { primary: true, onClick: () => navigate({ type: "user", userId })() },
-                `${chats.totalCount} common groups`,
-              ),
-          ),
-        ),
+      chatTypePrivate: ({ userId }) => r(UserAction, { airgram, userId, next }),
       chatTypeBasicGroup: ({ basicGroupId }) =>
         pipe(
           useRemoteData(() => getBasicGroupFullInfo({ basicGroupId })(airgram)),
@@ -111,7 +98,7 @@ export const ChatAction = ({
                   {
                     primary: sfi.canGetMembers,
                     inactive: !sfi.canGetMembers,
-                    onClick: () => navigate({ type: "supergroup", supergroupId })(),
+                    onClick: () => next({ type: "supergroup", supergroupId })(),
                   },
                   `${sfi.memberCount} members`,
                 ),
@@ -124,7 +111,7 @@ export const ChatAction = ({
                         primary: true,
                         iconName: "comment",
                         onClick: () =>
-                          navigate({ type: "supergroup", supergroupId: sfi.linkedChatId })(),
+                          next({ type: "supergroup", supergroupId: sfi.linkedChatId })(),
                       },
                       members,
                     ),

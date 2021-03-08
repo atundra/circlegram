@@ -10,8 +10,9 @@ import * as RTE from "fp-ts/ReaderTaskEither";
 import { getChat, getChats } from "../tg";
 import { AppInit } from "../components/AppInit";
 import { ChatCard } from "../components/ChatCard";
+import * as IO from "fp-ts/IO";
 
-export const Chats = ({ airgram, navigate }: { airgram: Airgram; navigate: Navigate }) =>
+export const Chats = ({ airgram, next }: { airgram: Airgram; next: Navigate }) =>
   pipe(
     useRemoteData(() =>
       pipe(
@@ -31,7 +32,7 @@ export const Chats = ({ airgram, navigate }: { airgram: Airgram; navigate: Navig
               key: chat.id,
               chat,
               airgram,
-              navigate,
+              next,
             },
             undefined,
           ),

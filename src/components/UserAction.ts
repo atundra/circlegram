@@ -11,22 +11,26 @@ import { HiddenErrorButton } from "./HiddenErrorButton";
 export const UserAction = ({
   airgram,
   userId,
-  navigate,
+  next,
 }: {
   airgram: Airgram;
   userId: number;
-  navigate: Navigate;
+  next: Navigate;
 }) =>
   pipe(
     useRemoteData(() => getGroupsInCommon({ userId, offsetChatId: 0, limit: 100 })(airgram)),
     RD.foldNoIdle(
       () => r(Button, { loading: true }, "0 common groups"),
       (err): FunctionComponentElement<any> =>
-        r(HiddenErrorButton, { title: "Error", text: String(err) }),
+        r(HiddenErrorButton, { title: "Error", text: JSON.stringify(err) }),
       (chats) =>
         r(
           Button,
-          { primary: true, onClick: () => navigate({ type: "user", userId })() },
+          {
+            primary: chats.totalCount > 0,
+            inactive: chats.totalCount === 0,
+            onClick: () => next({ type: "user", userId })(),
+          },
           `${chats.totalCount} common groups`,
         ),
     ),
