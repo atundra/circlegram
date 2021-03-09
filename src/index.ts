@@ -5,10 +5,11 @@ import { Auth } from "./auth"; // We borrow the component only for demonstration
 import { App } from "./app";
 import { Frame, Page } from "@servicetitan/design-system";
 import "@servicetitan/design-system/dist/system.min.css";
+import { API_HASH, API_ID } from "./conf";
 
 const airgram = new Airgram({
-  apiId,
-  apiHash,
+  apiId: API_ID,
+  apiHash: API_HASH,
   jsLogVerbosityLevel: "warning",
   logVerbosityLevel: 2,
 });
