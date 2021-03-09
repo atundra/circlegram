@@ -5,11 +5,15 @@ import { Auth } from "./auth"; // We borrow the component only for demonstration
 import { App } from "./app";
 import { Frame, Page } from "@servicetitan/design-system";
 import "@servicetitan/design-system/dist/system.min.css";
-import { API_HASH, API_ID } from "./conf";
+
+// @ts-ignore
+const apiId = parseInt(import.meta.env.SNOWPACK_PUBLIC_API_ID, 10);
+// @ts-ignore
+const apiHash = import.meta.env.SNOWPACK_PUBLIC_API_HASH;
 
 const airgram = new Airgram({
-  apiId: API_ID,
-  apiHash: API_HASH,
+  apiId,
+  apiHash,
   jsLogVerbosityLevel: "warning",
   logVerbosityLevel: 2,
 });

@@ -9,7 +9,8 @@ module.exports = {
     'tdweb': {url: '/', static: true},
   },
   plugins: [
-    '@snowpack/plugin-typescript'
+    '@snowpack/plugin-typescript',
+    '@snowpack/plugin-dotenv',
   ],
   packageOptions: {
     /* ... */

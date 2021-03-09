@@ -1,0 +1,21 @@
+name: Publish Docker image
+on:
+  push:
+    branches:
+      - main
+jobs:
+  push_to_registry:
+    name: Push Docker image to atndr.net registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker registry
+        uses: docker/build-push-action@v1
+        with:
+          registry: docker.atndr.net
+          repository: circlegram/circlegram
+          username: ${{ secrets.ATNDR_DOCKER_USERNAME }}
+          password: ${{ secrets.ATNDR_DOCKER_PASSWORD }}
+          tag_with_ref: true
+          tag_with_sha: true
