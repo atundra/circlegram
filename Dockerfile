@@ -1,7 +1,7 @@
 FROM node:14.16.0-alpine as build
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm i
+RUN npm i --unsafe-perm
 COPY . .
 ARG SNOWPACK_PUBLIC_API_ID
 ARG SNOWPACK_PUBLIC_API_HASH
