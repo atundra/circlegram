@@ -19,3 +19,4 @@ jobs:
           password: ${{ secrets.ATNDR_DOCKER_PASSWORD }}
           tag_with_ref: true
           tag_with_sha: true
+          build_args: SNOWPACK_PUBLIC_API_ID=${{ secrets.SNOWPACK_PUBLIC_API_ID }},SNOWPACK_PUBLIC_API_HASH=${{ secrets.SNOWPACK_PUBLIC_API_HASH }}
