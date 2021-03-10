@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "copyfiles -u 1 node_modules/tdweb/dist/* tdweb",
+    "postinstall": "copyfiles -u 3 \"node_modules/tdweb/dist/*\" tdweb/",
     "start": "snowpack dev",
     "build": "snowpack build",
     "test": "echo \"Error: no test specified\" && exit 1"
