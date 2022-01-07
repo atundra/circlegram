@@ -5,3 +5,11 @@ build/
 dist
 dist-ssr
 *.local
+
+# tdweb files
+public/1.6c401ab23349ce7bcf14.worker.js
+public/2.6c401ab23349ce7bcf14.worker.js
+public/3dee0f934ca1a5946a253599e3e442c6.wasm
+public/6c401ab23349ce7bcf14.worker.js
+public/c3e89babe1c03ad20450fff04e577278.mem
+public/tdweb.js
