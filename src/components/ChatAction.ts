@@ -32,13 +32,17 @@ export const ChatAction = ({
         pipe(
           useRemoteData(() => getBasicGroupFullInfo({ basicGroupId })(airgram)),
           RD.foldNoIdle(
-            () => r(Button, { loading: true }, "0 members"),
+            () => r(Button, { loading: true, iconName: "people" }, "0 members"),
             (err): FunctionComponentElement<any> =>
               r(HiddenErrorButton, { title: "Error", text: String(err) }),
             (bgfi) =>
               r(
                 Button,
-                { primary: bgfi.members.length !== 0, inactive: bgfi.members.length === 0 },
+                {
+                  primary: bgfi.members.length !== 0,
+                  inactive: bgfi.members.length === 0,
+                  iconName: "people",
+                },
                 `${bgfi.members.length} members`,
               ),
           ),
@@ -85,7 +89,7 @@ export const ChatAction = ({
             )(airgram),
           ),
           RD.foldNoIdle(
-            () => r(Button, { loading: true }, "0 members"),
+            () => r(Button, { loading: true, iconName: "people" }, "0 members"),
             (err): FunctionComponentElement<any> =>
               // REPLACE STRINGIFY WITH SHOOW INSTANCE
               r(HiddenErrorButton, { title: "Error", text: JSON.stringify(err) }),
@@ -98,7 +102,8 @@ export const ChatAction = ({
                   {
                     primary: sfi.canGetMembers,
                     inactive: !sfi.canGetMembers,
-                    onClick: () => next({ type: "supergroup", supergroupId })(),
+                    onClick: () => next({ type: "supergroup", supergroupId, chatId: chat.id })(),
+                    iconName: "people",
                   },
                   `${sfi.memberCount} members`,
                 ),
@@ -111,7 +116,11 @@ export const ChatAction = ({
                         primary: true,
                         iconName: "comment",
                         onClick: () =>
-                          next({ type: "supergroup", supergroupId: sfi.linkedChatId })(),
+                          next({
+                            type: "supergroup",
+                            supergroupId: sfi.linkedChatId,
+                            chatId: chat.id,
+                          })(),
                       },
                       members,
                     ),

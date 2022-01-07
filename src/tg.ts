@@ -139,3 +139,5 @@ export const readFile = (file: File): RTE.ReaderTaskEither<Airgram, Error | TgEr
     // And read it from fs
     RTE.chain(() => readFilePart({ fileId: file.id, count: 0, offset: 0 })),
   );
+
+export const getMe = apiMethod<void, User>((api) => api.getMe());

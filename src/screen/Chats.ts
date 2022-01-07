@@ -19,10 +19,7 @@ export const Chats = ({ airgram, next }: { airgram: Airgram; next: Navigate }) =
     useRemoteData(() =>
       pipe(
         getChats({ /* offsetOrder: "9223372036854775807", */ limit: 20 }),
-        RTE.map((cs) => {
-          console.log(cs);
-          return cs.chatIds;
-        }),
+        RTE.map((cs) => cs.chatIds),
         RTE.chain(RTE.traverseArray(getChat)),
       )(airgram),
     ),

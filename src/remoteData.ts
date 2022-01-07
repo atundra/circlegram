@@ -1,4 +1,4 @@
-import { Lazy, absurd, pipe } from "fp-ts/lib/function";
+import { Lazy, absurd, pipe, flow } from "fp-ts/lib/function";
 import { Functor2 } from "fp-ts/lib/Functor";
 import { Monad2 } from "fp-ts/lib/Monad";
 import { Applicative2 } from "fp-ts/lib/Applicative";
@@ -123,6 +123,88 @@ export const ap: <E, A>(
 export const of: Applicative2<URI>["of"] = loaded;
 
 /**
+ * Less strict version of [`chain`](#chain).
+ *
+ * @category Monad
+ */
+export const chainW = <D, A, B>(f: (a: A) => RemoteData<D, B>) => <E>(
+  ma: RemoteData<E, A>,
+): RemoteData<D | E, B> => (ma.state === "loaded" ? f(ma.data) : ma);
+
+/**
+ * Composes computations in sequence, using the return value of one computation to determine the next computation.
+ *
+ * @category Monad
+ */
+export const chain: <E, A, B>(
+  f: (a: A) => RemoteData<E, B>,
+) => (ma: RemoteData<E, A>) => RemoteData<E, B> = chainW;
+
+// -------------------------------------------------------------------------------------
+// do notation
+// -------------------------------------------------------------------------------------
+
+export const Do: RemoteData<never, {}> = of({});
+
+export const bindTo = <N extends string>(
+  name: N,
+): (<E, A>(fa: RemoteData<E, A>) => RemoteData<E, { [K in N]: A }>) => map(bindTo_(name));
+
+/**
+ * @since 2.8.0
+ */
+export const bindW = <N extends string, A, D, B>(
+  name: Exclude<N, keyof A>,
+  f: (a: A) => RemoteData<D, B>,
+): (<E>(
+  fa: RemoteData<E, A>,
+) => RemoteData<D | E, { [K in keyof A | N]: K extends keyof A ? A[K] : B }>) =>
+  chainW((a) =>
+    pipe(
+      f(a),
+      map((b) => bind_(a, name, b)),
+    ),
+  );
+
+/**
+ * @since 2.8.0
+ */
+export const bind: <N extends string, A, E, B>(
+  name: Exclude<N, keyof A>,
+  f: (a: A) => RemoteData<E, B>,
+) => (
+  fa: RemoteData<E, A>,
+) => RemoteData<E, { [K in keyof A | N]: K extends keyof A ? A[K] : B }> = bindW;
+
+// -------------------------------------------------------------------------------------
+// pipeable sequence S
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 2.8.0
+ */
+export const apSW = <A, N extends string, D, B>(
+  name: Exclude<N, keyof A>,
+  fb: RemoteData<D, B>,
+): (<E>(
+  fa: RemoteData<E, A>,
+) => RemoteData<D | E, { [K in keyof A | N]: K extends keyof A ? A[K] : B }>) =>
+  flow(
+    map((a) => (b: B) => bind_(a, name, b)),
+    apW(fb),
+  );
+
+/**
+ * @since 2.8.0
+ */
+export const apS: <A, N extends string, E, B>(
+  name: Exclude<N, keyof A>,
+  fb: RemoteData<E, B>,
+) => (
+  fa: RemoteData<E, A>,
+) => RemoteData<E, { [K in keyof A | N]: K extends keyof A ? A[K] : B }> = apSW;
+
+/**
  * @category destructors
  */
 export const fold = <E, A, T>(
@@ -173,6 +255,15 @@ export const Applicative: Applicative2<URI> = {
   ap: ap_,
   of,
 };
+
+const bind_ = <A, N extends string, B>(
+  a: A,
+  name: Exclude<N, keyof A>,
+  b: B,
+): { [K in keyof A | N]: K extends keyof A ? A[K] : B } =>
+  Object.assign({}, a, { [name]: b }) as any;
+
+const bindTo_ = <N extends string>(name: N) => <B>(b: B): { [K in N]: B } => ({ [name]: b } as any);
 
 // flux
 type RequestAction = {

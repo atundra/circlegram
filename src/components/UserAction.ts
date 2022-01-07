@@ -30,6 +30,7 @@ export const UserAction = ({
             primary: chats.totalCount > 0,
             inactive: chats.totalCount === 0,
             onClick: () => next({ type: "user", userId })(),
+            iconName: "chat",
           },
           `${chats.totalCount} common groups`,
         ),

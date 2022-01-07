@@ -5,6 +5,7 @@ import * as O from "fp-ts/Option";
 import * as RNEA from "fp-ts/ReadonlyNonEmptyArray";
 import { pipe } from "fp-ts/lib/function";
 import { useState } from "react";
+import { Chat } from "@airgram/web";
 
 type DestinationMain = { type: "main" };
 
@@ -16,6 +17,7 @@ type DestinationUser = {
 type DestinationSupergroup = {
   type: "supergroup";
   supergroupId: number;
+  chatId: number;
 };
 
 export type Destination = DestinationUser | DestinationMain | DestinationSupergroup;

@@ -14,8 +14,8 @@ export const App = ({ airgram }: { airgram: Airgram }) =>
         {
           main: () => r(ChatsScreen, { airgram, next }),
           user: ({ userId }) => r(UserScreen, { airgram, userId, next, back }),
-          supergroup: ({ supergroupId }) =>
-            r(SupergroupScreen, { airgram, supergroupId, next, back }),
+          supergroup: ({ supergroupId, chatId }) =>
+            r(SupergroupScreen, { airgram, supergroupId, next, back, chatId }),
         },
         (_) => "Not supported screen",
       ),

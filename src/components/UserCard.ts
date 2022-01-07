@@ -4,7 +4,7 @@ import { Navigate } from "../screen/nav";
 import * as O from "fp-ts/Option";
 import { useRemoteData } from "../hook";
 import * as RD from "../remoteData";
-import { getGroupsInCommon, getUser, getUserFullInfo, readFile } from "../tg";
+import { getGroupsInCommon, getMe, getUser, getUserFullInfo, readFile } from "../tg";
 import { createElement as r, FunctionComponentElement } from "react";
 import {
   Avatar,
@@ -35,6 +35,7 @@ export const UserCard = ({
         RTE.Do,
         RTE.apS("userFullInfo", getUserFullInfo({ userId })),
         RTE.apS("user", getUser({ userId })),
+        RTE.apS("me", getMe()),
         RTE.bind("photoUrl", ({ user }) =>
           pipe(
             user.profilePhoto,
@@ -80,7 +81,7 @@ export const UserCard = ({
               r(Headline, { size: "small" }, `${data.user.firstName} ${data.user.lastName}`),
               r(BodyText, { subdued: true, size: "small" }, data.userFullInfo.bio),
             ),
-            r(UserAction, { userId, next, airgram }),
+            data.me.id !== userId && r(UserAction, { userId, next, airgram }),
           ),
         ),
     ),
