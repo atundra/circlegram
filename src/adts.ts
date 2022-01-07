@@ -47,6 +47,13 @@ import type {
   ChatTypeBasicGroup,
   ChatTypeSupergroup,
   ChatTypeSecret,
+  MessageAnimatedEmoji,
+  MessageVideoChatScheduled,
+  MessageVideoChatStarted,
+  MessageVideoChatEnded,
+  MessageInviteVideoChatParticipants,
+  MessageChatJoinByRequest,
+  MessageChatSetTheme,
 } from "@airgram/web";
 import { makeADT, ofType } from "@morphic-ts/adt";
 
@@ -57,6 +64,7 @@ export const messageSender = makeADT("_")({
 
 export const messageContent = makeADT("_")({
   messageText: ofType<MessageText>(),
+  messageAnimatedEmoji: ofType<MessageAnimatedEmoji>(),
   messageAnimation: ofType<MessageAnimation>(),
   messageAudio: ofType<MessageAudio>(),
   messageDocument: ofType<MessageDocument>(),
@@ -64,6 +72,10 @@ export const messageContent = makeADT("_")({
   messageExpiredPhoto: ofType<MessageExpiredPhoto>(),
   messageSticker: ofType<MessageSticker>(),
   messageVideo: ofType<MessageVideo>(),
+  messageVideoChatScheduled: ofType<MessageVideoChatScheduled>(),
+  messageVideoChatStarted: ofType<MessageVideoChatStarted>(),
+  messageVideoChatEnded: ofType<MessageVideoChatEnded>(),
+  messageInviteVideoChatParticipants: ofType<MessageInviteVideoChatParticipants>(),
   messageExpiredVideo: ofType<MessageExpiredVideo>(),
   messageVideoNote: ofType<MessageVideoNote>(),
   messageVoiceNote: ofType<MessageVoiceNote>(),
@@ -82,11 +94,13 @@ export const messageContent = makeADT("_")({
   messageChatDeletePhoto: ofType<MessageChatDeletePhoto>(),
   messageChatAddMembers: ofType<MessageChatAddMembers>(),
   messageChatJoinByLink: ofType<MessageChatJoinByLink>(),
+  messageChatJoinByRequest: ofType<MessageChatJoinByRequest>(),
   messageChatDeleteMember: ofType<MessageChatDeleteMember>(),
   messageChatUpgradeTo: ofType<MessageChatUpgradeTo>(),
   messageChatUpgradeFrom: ofType<MessageChatUpgradeFrom>(),
   messagePinMessage: ofType<MessagePinMessage>(),
   messageScreenshotTaken: ofType<MessageScreenshotTaken>(),
+  messageChatSetTheme: ofType<MessageChatSetTheme>(),
   messageChatSetTtl: ofType<MessageChatSetTtl>(),
   messageCustomServiceAction: ofType<MessageCustomServiceAction>(),
   messageGameScore: ofType<MessageGameScore>(),

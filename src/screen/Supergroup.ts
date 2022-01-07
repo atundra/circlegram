@@ -13,6 +13,7 @@ import { Headline, Layout, LayoutSection, ProgressBar, Stack } from "@servicetit
 import { UserCard } from "../components/UserCard";
 import { BaseList } from "./BaseList";
 import { HiddenErrorButton } from "../components/HiddenErrorButton";
+import { messageSender } from "../adts";
 
 const constString = (s: string) => () => r("span", undefined, s);
 
@@ -46,20 +47,27 @@ export const Supergroup = ({ airgram, supergroupId, next, back }: Props) =>
         pipe(
           getSupergroupMembers({ supergroupId, offset: 0, limit: 200 }),
           RTE.map((a) => a.members),
-          RTE.map(RA.map((a) => a.userId)),
+          RTE.map(RA.map((a) => a.memberId)),
         )(airgram),
       ),
       RD.foldNoIdle(
         (): ReactElement => r(ProgressBar, { indeterminate: true, position: "top" }, undefined),
         (err) => r("div", undefined, JSON.stringify(err)),
         flow(
-          RA.map((userId) =>
-            r(UserCard, {
-              key: userId,
-              userId,
-              airgram,
-              next,
-            }),
+          RA.map((sender) =>
+            pipe(
+              sender,
+              messageSender.match({
+                messageSenderChat: ({ chatId }) => r("div", {}, "Sender is a chat"),
+                messageSenderUser: ({ userId }) =>
+                  r(UserCard, {
+                    key: userId,
+                    userId,
+                    airgram,
+                    next,
+                  }),
+              }),
+            ),
           ),
           (el) => r(Fragment, {}, el),
         ),

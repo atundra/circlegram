@@ -17,7 +17,6 @@ import {
   DownloadFileParams,
   Error as TgError,
   File,
-  FilePart,
   GetBasicGroupFullInfoParams,
   GetChatsParams,
   GetGroupsInCommonParams,
@@ -34,54 +33,66 @@ import {
   Users,
 } from "@airgram/web";
 
-export const getChats = (
-  p: GetChatsParams,
-): RTE.ReaderTaskEither<Airgram, Error | TgError, Chats> => ({ api }) =>
-  pipe(
-    TE.tryCatch(() => api.getChats(p), E.toError),
-    TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
-  );
+type FilePart = {
+  _: "filePart";
+  data: Blob;
+};
 
-export const getChat = (chatId: number): RTE.ReaderTaskEither<Airgram, Error | TgError, Chat> => ({
-  api,
-}) =>
-  pipe(
-    TE.tryCatch(() => api.getChat({ chatId }), E.toError),
-    TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
-  );
+export const getChats =
+  (p: GetChatsParams): RTE.ReaderTaskEither<Airgram, Error | TgError, Chats> =>
+  ({ api }) =>
+    pipe(
+      TE.tryCatch(() => api.getChats(p), E.toError),
+      TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
+    );
 
-export const getContacts = (): RTE.ReaderTaskEither<Airgram, Error | TgError, Users> => ({ api }) =>
-  pipe(
-    TE.tryCatch(() => api.getContacts(), E.toError),
-    TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
-  );
+export const getChat =
+  (chatId: number): RTE.ReaderTaskEither<Airgram, Error | TgError, Chat> =>
+  ({ api }) =>
+    pipe(
+      TE.tryCatch(() => api.getChat({ chatId }), E.toError),
+      TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
+    );
 
-export const readFilePart = (
-  p: ReadFilePartParams,
-): RTE.ReaderTaskEither<Airgram, Error | TgError, FilePart> => ({ api }) =>
-  pipe(
-    TE.tryCatch(() => api.readFilePart(p), E.toError),
-    TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
-  );
+export const getContacts =
+  (): RTE.ReaderTaskEither<Airgram, Error | TgError, Users> =>
+  ({ api }) =>
+    pipe(
+      TE.tryCatch(() => api.getContacts(), E.toError),
+      TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
+    );
 
-export const downloadFile = (
-  p: DownloadFileParams,
-): RTE.ReaderTaskEither<Airgram, Error | TgError, File> => ({ api }) =>
-  pipe(
-    TE.tryCatch(() => api.downloadFile(p), E.toError),
-    TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
-  );
+export const readFilePart =
+  (p: ReadFilePartParams): RTE.ReaderTaskEither<Airgram, Error | TgError, FilePart> =>
+  ({ api }) =>
+    pipe(
+      TE.tryCatch(() => api.readFilePart(p), E.toError),
+      TE.chainW((a) =>
+        a.response._ === "error"
+          ? TE.left(a.response)
+          : TE.right(a.response as unknown as FilePart),
+      ),
+    );
+
+export const downloadFile =
+  (p: DownloadFileParams): RTE.ReaderTaskEither<Airgram, Error | TgError, File> =>
+  ({ api }) =>
+    pipe(
+      TE.tryCatch(() => api.downloadFile(p), E.toError),
+      TE.chainW((a) => (a.response._ === "error" ? TE.left(a.response) : TE.right(a.response))),
+    );
 
 const isError = (a: any): a is TgError => a._ === "error";
 
-const apiMethod = <P, R extends BaseTdObject>(
-  f: (api: ApiMethods, p: P) => Promise<ApiResponse<P, R>>,
-) => (p: P): RTE.ReaderTaskEither<Airgram, Error | TgError, R> => ({ api }) =>
-  pipe(
-    TE.tryCatch(() => f(api, p), E.toError),
-    TE.map((a) => a.response),
-    TE.chain((a) => (isError(a) ? TE.left(a) : TE.right<TgError | Error, R>(a))),
-  );
+const apiMethod =
+  <P, R extends BaseTdObject>(f: (api: ApiMethods, p: P) => Promise<ApiResponse<P, R>>) =>
+  (p: P): RTE.ReaderTaskEither<Airgram, Error | TgError, R> =>
+  ({ api }) =>
+    pipe(
+      TE.tryCatch(() => f(api, p), E.toError),
+      TE.map((a) => a.response),
+      TE.chain((a) => (isError(a) ? TE.left(a) : TE.right<TgError | Error, R>(a))),
+    );
 
 export const getGroupsInCommon = apiMethod<GetGroupsInCommonParams, Chats>((api, p) =>
   api.getGroupsInCommon(p),
