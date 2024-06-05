@@ -42,4 +42,6 @@ jobs:
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          build-args: SNOWPACK_PUBLIC_API_ID=${{ secrets.SNOWPACK_PUBLIC_API_ID }},SNOWPACK_PUBLIC_API_HASH=${{ secrets.SNOWPACK_PUBLIC_API_HASH }}
+          build-args: |
+            SNOWPACK_PUBLIC_API_ID=${{ secrets.SNOWPACK_PUBLIC_API_ID }}
+            SNOWPACK_PUBLIC_API_HASH=${{ secrets.SNOWPACK_PUBLIC_API_HASH }}
