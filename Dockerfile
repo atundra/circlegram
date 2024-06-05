@@ -1,4 +1,4 @@
-FROM node:lts-alpine as build
+FROM node:lts as build
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm i --unsafe-perm
